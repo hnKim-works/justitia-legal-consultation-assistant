@@ -1,0 +1,524 @@
+{
+  "case_types": {
+    "sexual_violence": {
+      "label": "성폭력 피해 지원",
+      "description": "성적 침해나 강제 신체 접촉과 관련된 피해 지원이 필요할 수 있습니다."
+    },
+    "physical_violence": {
+      "label": "폭행/상해 관련 형사 상담",
+      "description": "신체적 폭력, 상해, 협박 등 형사 상담이 필요할 수 있습니다."
+    },
+    "victim_support": {
+      "label": "피해자 보호 지원",
+      "description": "피해자 보호, 긴급 상담, 지원기관 연계가 필요할 수 있습니다."
+    },
+    "emergency_risk": {
+      "label": "긴급 위험 가능성",
+      "description": "현재 안전 여부 확인이 필요한 상황일 수 있습니다."
+    },
+    "school_violence": {
+      "label": "학교폭력 상담",
+      "description": "학교 내 폭행, 협박, 따돌림, 괴롭힘, 사이버폭력 등과 관련된 상담이 필요할 수 있습니다."
+    },
+    "digital_sexual_crime": {
+      "label": "디지털 성범죄 피해 지원",
+      "description": "불법촬영, 촬영물 유포 협박, 허위영상물, 온라인 성적 침해와 관련된 피해 지원이 필요할 수 있습니다."
+    },
+    "lease_fraud": {
+      "label": "임대차·전세사기 상담",
+      "description": "보증금 미반환, 전세사기, 임대차 분쟁과 관련된 상담이 필요할 수 있습니다."
+    }
+  },
+
+  "keyword_groups": [
+    {
+      "group_id": "sexual_violation",
+      "group_label": "성적 침해",
+      "keywords": [
+        "옷을 벗기","강제로 벗기","몸을 더듬","더듬었","만졌","성추행","강간","성폭행","신체를 만지",
+        "찢었", "만지려고", "만지면서", "강제로 하려고", "억지로 하려고", "동의 없이", "잠든 사이에", "술 먹이고"
+      ],
+      "scores": {
+        "sexual_violence": 6,
+        "physical_violence": 0,
+        "victim_support": 4,
+        "emergency_risk": 2
+      }
+    },
+    {
+      "group_id": "digital_sexual_crime",
+      "group_label": "디지털 성범죄",
+      "keywords": [
+        "불법촬영","몰카","영상 유포","사진 유포","유포하겠","퍼뜨리","합성사진",
+        "딥페이크","허위영상","몸캠","나체사진","나체 영상","성관계 영상",
+        "단톡방에 올린","온라인에 올리","SNS에 올리"
+      ],
+      "scores": {
+        "sexual_violence": 3,
+        "digital_sexual_crime": 6,
+        "victim_support": 5,
+        "emergency_risk": 4
+      }
+    },
+    {
+      "group_id": "physical_attack",
+      "group_label": "물리적 폭력",
+      "keywords": [ 
+        "때렸","때리","맞았","주먹","발로 차","차고","밀쳤","밀치","폭행","상해","목을 졸","목 졸","목조","끌고","던졌",
+        "밀치", "잡아끌", "뺨", "머리미", "머리채", "머리카락을", "때리려고", "부쉈", "던지", "밟았"
+      ],
+      "scores": {
+        "sexual_violence": 0,
+        "physical_violence": 5,
+        "victim_support": 3,
+        "emergency_risk": 3
+      }
+    },
+    {
+      "group_id": "threat_danger",
+      "group_label": "협박/긴급 위험",
+      "keywords": [
+        "죽이","죽여","협박","감금","가둬","도망","무서","위협","칼", "흉기", "따라와","스토킹","칼","흉기",
+        "유포하겠", "알리겠", "소문내겠", "뿌리겠", "신고하면", "가만 안 둔", "인생 망치", "자살하겠"
+      ],
+      "scores": {
+        "sexual_violence": 0,
+        "physical_violence": 2,
+        "victim_support": 4,
+        "emergency_risk": 6
+      }
+    },
+    {
+      "group_id": "relationship_context",
+      "group_label": "관계 기반 맥락",
+      "keywords": [
+        "남자친구","여자친구", "전남친","전여친","애인", "배우자", "남편","아내","친구","상사","선배",
+        "전남자친구","전여자친구","전애인","전배우자","전남편","전아내","직장 동료", "사장", "교수", "원장"
+      ],
+      "scores": {
+        "sexual_violence": 1,
+        "physical_violence": 1,
+        "victim_support": 2,
+        "emergency_risk": 0
+      }
+    },
+    {
+      "group_id": "stalking_behavior",
+      "group_label": "스토킹/지속 접근",
+      "keywords": [
+        "집 앞","찾아와","계속 와","따라와","기다려","계속 연락","전화해","문자해","sns","스토킹","몰래","지켜봐","퇴근길",
+        "기다리고", "지켜보고", "따라오", "미행", "위치추적", "차량에", "매일", "하루에도 수십번", "번신", "발신제한"
+      ],
+      "scores": {
+        "sexual_violence": 1,
+        "physical_violence": 1,
+        "victim_support": 4,
+        "emergency_risk": 5
+      }
+    },
+    {
+      "group_id": "coercive_control",
+      "group_label": "강압적 통제",
+      "keywords": [
+        "감금","가둬","통제","감시","자유 없어","못 나가","못 만나","못 연락","지배","억압"
+      ],
+      "scores": {
+        "sexual_violence": 1,
+        "physical_violence": 2,
+        "victim_support": 4,
+        "emergency_risk": 4
+      }
+    },
+    {
+      "group_id": "school_violence_context",
+      "group_label": "학교폭력 맥락",
+      "keywords": [
+        "학교폭력","학폭","같은 반","반 친구","친구들이","따돌림","왕따","괴롭힘","욕설","단톡방","카톡방","조롱",
+        "소문","괴롭혀","돈을 뺏","물건을 빼앗","셔틀","선배가","후배가","톡방"
+      ],
+      "scores": {
+        "sexual_violence": 0,
+        "physical_violence": 2,
+        "victim_support": 4,
+        "emergency_risk": 2,
+        "school_violence": 6
+      }
+    },
+    {
+      "group_id": "lease_fraud",
+      "group_label": "임대차/전세사기",
+      "keywords": [
+        "보증금","전세","월세","집주인","임대인","계약금","돌려주지","전세사기","깡통전세","이사 못",
+        "임대차","계약 종료","보증금 반환","보증금을 안","보증금을 못","전세금을 안","전세금을 못"
+      ],
+      "scores": {
+        "lease_fraud": 6
+      }
+    }
+  ],
+
+  "thresholds": {
+    "display": 5,
+    "high_priority": 6
+  },
+
+  "priority_rules": [
+    {
+      "if_group_detected": "sexual_violation",
+      "must_include": "sexual_violence"
+    },
+    {
+      "if_group_detected": "physical_attack",
+      "must_include": "physical_violence"
+    },
+    {
+      "if_group_detected": "threat_danger",
+      "must_include": "emergency_risk"
+    },
+    {
+      "if_group_detected": "digital_sexual_crime",
+      "must_include": "digital_sexual_crime"
+    },
+    {
+      "if_group_detected": "lease_fraud",
+      "must_include": "lease_fraud"
+    }
+  ],
+
+  "follow_up_question_policy": {
+    "max_questions": 2,
+    "selection_rule": "질문 후보 중 priority가 낮은 질문을 우선 선택하고, 같은 우선순위에서는 탐지된 사건 유형과 키워드 그룹에 맞는 질문을 선택합니다.",
+    "gemini_rules": [
+      "질문은 최대 2개만 선택합니다.",
+      "가장 긴급한 질문을 우선합니다.",
+      "법률 판단이나 단정적인 표현을 하지 않습니다.",
+      "새 질문을 만들지 않고 후보 질문의 의미를 유지한 채 자연스럽게 다듬습니다.",
+      "사용자를 탓하거나 책임을 묻는 표현을 쓰지 않습니다."
+    ]
+  },
+
+  "follow_up_question_bank": {
+    "emergency_risk": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "현재 안전한 장소에 계신가요?",
+        "purpose": "즉각적인 위험 및 긴급 보호 필요 여부 확인"
+      },
+      {
+        "condition": "ongoing_threat",
+        "priority": 2,
+        "question": "상대방의 접근, 연락, 협박이 지금도 이어지고 있나요?",
+        "purpose": "현재 진행 중인 위험 여부 확인"
+      },
+      {
+        "condition": "weapon_or_confinement",
+        "priority": 2,
+        "question": "흉기 위협, 감금, 집 앞 대기처럼 바로 위험할 수 있는 상황이 있었나요?",
+        "purpose": "긴급 신고 또는 보호 연계 필요성 확인"
+      }
+    ],
+    "sexual_violence": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "현재 안전한 장소에 계신가요?",
+        "purpose": "긴급 보호 필요 여부 확인"
+      },
+      {
+        "condition": "recent_72_hours",
+        "priority": 2,
+        "question": "피해가 발생한 지 72시간 이내인가요?",
+        "purpose": "응급키트 및 증거채취 가능성 확인"
+      },
+      {
+        "condition": "evidence",
+        "priority": 3,
+        "question": "당시 입었던 옷, 상처 사진, 메시지, 통화기록처럼 남아 있는 자료가 있나요?",
+        "purpose": "상담 준비 자료와 증거 보존 여부 확인"
+      },
+      {
+        "condition": "medical",
+        "priority": 4,
+        "question": "병원 진료나 해바라기센터 방문을 한 적이 있나요?",
+        "purpose": "의료지원 및 증거채취 진행 여부 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "상담을 원하는 지역 또는 사건이 발생한 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ],
+    "digital_sexual_crime": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "현재 안전한 장소에 계신가요?",
+        "purpose": "오프라인 위협 또는 긴급 보호 필요 여부 확인"
+      },
+      {
+        "condition": "ongoing_distribution",
+        "priority": 2,
+        "question": "사진이나 영상이 이미 유포되었거나, 유포 협박이 지금도 계속되고 있나요?",
+        "purpose": "삭제지원 및 긴급 대응 필요성 확인"
+      },
+      {
+        "condition": "evidence",
+        "priority": 3,
+        "question": "게시물 주소, 계정 정보, 대화 내용, 캡처 화면처럼 남아 있는 자료가 있나요?",
+        "purpose": "삭제지원 및 상담 준비 자료 확인"
+      },
+      {
+        "condition": "platform",
+        "priority": 4,
+        "question": "피해가 발생한 곳이 SNS, 메신저, 웹사이트, 단체 채팅방 중 어디인가요?",
+        "purpose": "피해 경로와 삭제지원 방향 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "상담을 원하는 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ],
+    "physical_violence": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "현재 안전한 장소에 계신가요?",
+        "purpose": "추가 폭행 위험 및 긴급 보호 필요 여부 확인"
+      },
+      {
+        "condition": "injury",
+        "priority": 2,
+        "question": "상처나 통증이 있어 병원 진료가 필요한 상태인가요?",
+        "purpose": "의료지원 필요성과 진단서 등 상담 준비 자료 확인"
+      },
+      {
+        "condition": "ongoing_threat",
+        "priority": 2,
+        "question": "상대방의 접근이나 협박이 지금도 이어지고 있나요?",
+        "purpose": "현재 위험 지속 여부 확인"
+      },
+      {
+        "condition": "evidence",
+        "priority": 3,
+        "question": "상처 사진, 진단서, 문자, CCTV 위치처럼 남아 있는 자료가 있나요?",
+        "purpose": "상담 준비 자료 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "상담을 원하는 지역 또는 사건이 발생한 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ],
+    "victim_support": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "현재 안전한 장소에 계신가요?",
+        "purpose": "긴급 보호 필요 여부 확인"
+      },
+      {
+        "condition": "support_needed",
+        "priority": 3,
+        "question": "지금 가장 필요한 도움이 안전 확보, 의료지원, 상담, 법률상담 중 무엇인가요?",
+        "purpose": "우선 지원 방향 확인"
+      },
+      {
+        "condition": "prior_contact",
+        "priority": 4,
+        "question": "이미 경찰, 병원, 상담기관 중 연락하거나 방문한 곳이 있나요?",
+        "purpose": "기존 지원 진행 상황 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "상담을 원하는 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ],
+    "school_violence": [
+      {
+        "condition": "safety",
+        "priority": 1,
+        "question": "등하교나 학교생활 중 지금도 바로 위험한 상황이 있나요?",
+        "purpose": "현재 안전 여부와 긴급 보호 필요성 확인"
+      },
+      {
+        "condition": "ongoing_harm",
+        "priority": 2,
+        "question": "폭행, 협박, 따돌림, 온라인 괴롭힘이 지금도 계속되고 있나요?",
+        "purpose": "피해 지속 여부 확인"
+      },
+      {
+        "condition": "evidence",
+        "priority": 3,
+        "question": "카톡, 게시글, 녹음, 사진, 목격자처럼 남아 있는 자료가 있나요?",
+        "purpose": "상담 및 신고 준비 자료 확인"
+      },
+      {
+        "condition": "school_contact",
+        "priority": 4,
+        "question": "담임교사, 보호자, 학교전담경찰관, 117 중 이미 알린 곳이 있나요?",
+        "purpose": "기존 도움 요청 상황 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "학교가 있는 지역 또는 상담을 원하는 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ],
+    "lease_fraud": [
+      {
+        "condition": "contract_status",
+        "priority": 1,
+        "question": "계약이 끝났는데도 보증금을 돌려받지 못한 상황인가요?",
+        "purpose": "임대차 분쟁의 현재 단계 확인"
+      },
+      {
+        "condition": "amount_and_due_date",
+        "priority": 2,
+        "question": "돌려받지 못한 보증금 액수와 반환 예정일은 어떻게 되나요?",
+        "purpose": "상담 준비에 필요한 핵심 사실 확인"
+      },
+      {
+        "condition": "documents",
+        "priority": 3,
+        "question": "임대차계약서, 보증금 이체내역, 등기부등본 같은 자료를 갖고 있나요?",
+        "purpose": "상담 준비 자료 확인"
+      },
+      {
+        "condition": "prior_action",
+        "priority": 4,
+        "question": "내용증명 발송, 임차권등기명령 신청, HUG 상담 중 이미 진행한 것이 있나요?",
+        "purpose": "기존 대응 상황 확인"
+      },
+      {
+        "condition": "region",
+        "priority": 5,
+        "question": "임대주택이 있는 지역 또는 상담을 원하는 지역은 어디인가요?",
+        "purpose": "지역 기반 상담기관 연계"
+      }
+    ]
+  },
+
+  "guidance_templates": {
+    "sexual_violence_no_evidence": "현재 증거가 없다고 느껴져도 문자, 통화기록, CCTV 위치, 상처 사진, 진료기록, 사건 직후 작성한 메모 등이 상담 준비 자료가 될 수 있습니다.",
+    "sexual_violence_recent": "피해 발생 후 시간이 얼마 지나지 않았다면, 증거 보존과 의료지원을 위해 해바라기센터 또는 성폭력전담의료기관 방문이 도움이 될 수 있습니다.",
+    "medical_without_report": "신고 여부를 바로 결정하지 않았더라도 해바라기센터나 성폭력전담의료기관에서 의료지원 가능 여부를 확인할 수 있습니다.",
+    "digital_sexual_crime_evidence": "게시물 주소, 계정명, 대화 내용, 캡처 화면, 유포 시점 기록은 삭제지원과 상담 준비에 도움이 될 수 있습니다.",
+    "physical_violence_evidence": "상처 사진, 진단서, 문자나 통화기록, CCTV 위치, 목격자 정보는 폭행 피해 상담 준비 자료가 될 수 있습니다.",
+    "lease_fraud_documents": "임대차계약서, 보증금 이체내역, 등기부등본, 임대인과의 문자 내용은 임대차 상담 준비에 도움이 될 수 있습니다."
+  },
+
+  "support_agencies": {
+    "sexual_violence": [
+      "해바라기센터",
+      "여성긴급전화 1366",
+      "대한법률구조공단"
+    ],
+    "physical_violence": [
+      "대한법률구조공단",
+      "경찰청 112",
+      "마을변호사"
+    ],
+    "victim_support": [
+      "여성긴급전화 1366",
+      "해바라기센터",
+      "대한법률구조공단"
+    ],
+    "emergency_risk": [
+      "경찰청 112",
+      "여성긴급전화 1366"
+    ],
+    "school_violence": [
+      "학교폭력 신고센터 117",
+      "청소년상담 1388",
+      "대한법률구조공단"
+    ],
+    "digital_sexual_crime": [
+      "중앙디지털성범죄피해자지원센터",
+      "경찰청 사이버범죄 신고시스템",
+      "여성긴급전화 1366",
+      "대한법률구조공단"
+    ],
+    "lease_fraud": [
+      "주택도시보증공사 HUG",
+      "대한법률구조공단",
+      "정부민원안내콜센터 110"
+    ]
+  },
+
+  "agency_info": {
+    "해바라기센터": {
+      "name": "해바라기센터",
+      "phone": null,
+      "url": "https://www.sunflowercenter.or.kr",
+      "description": "성폭력, 가정폭력, 성매매, 교제폭력, 스토킹 피해자에게 상담·의료·수사·법률지원을 통합적으로 제공하는 기관입니다."
+    },
+    "여성긴급전화 1366": {
+      "name": "여성긴급전화 1366",
+      "phone": "1366",
+      "url": null,
+      "description": "폭력 피해 상황에서 24시간 긴급 상담과 보호기관 연계를 받을 수 있는 상담 전화입니다."
+    },
+    "학교폭력 신고센터 117": {
+      "name": "학교폭력 신고센터 117",
+      "phone": "117",
+      "url": "https://www.safe182.go.kr",
+      "description": "학교폭력 신고와 상담을 지원하는 기관입니다. 전화 117, 문자 #0117, 앱 등을 통해 상담할 수 있습니다."
+    },
+    "청소년상담 1388": {
+      "name": "청소년상담 1388",
+      "phone": "1388",
+      "url": "https://www.kyci.or.kr",
+      "description": "청소년의 위기 상황, 학교생활, 가족·교우 관계 등에 대해 상담과 보호 연계를 지원하는 상담 서비스입니다."
+    },
+    "대한법률구조공단": {
+      "name": "대한법률구조공단",
+      "phone": "132",
+      "url": "https://www.klac.or.kr",
+      "description": "법률상담, 소송구조, 법률정보 제공 등을 지원하는 공공 법률지원 기관입니다."
+    },
+    "경찰청 112": {
+      "name": "경찰청 112",
+      "phone": "112",
+      "url": null,
+      "description": "현재 위험하거나 긴급한 상황에서 즉시 신고할 수 있는 긴급 신고 번호입니다."
+    },
+    "마을변호사": {
+      "name": "마을변호사",
+      "phone": null,
+      "url": null,
+      "description": "지역 주민이 가까운 행정복지센터 등을 통해 변호사의 법률상담을 받을 수 있도록 연결하는 공공 법률지원 제도입니다."
+    },
+    "중앙디지털성범죄피해자지원센터": {
+      "name": "중앙디지털성범죄피해자지원센터",
+      "phone": "02-735-8994",
+      "url": "https://d4u.stop.or.kr",
+      "description": "디지털 성범죄 피해 상담, 삭제지원 접수, 피해자지원기관 연계 등을 지원하는 기관입니다."
+    },
+    "경찰청 사이버범죄 신고시스템": {
+      "name": "경찰청 사이버범죄 신고시스템",
+      "phone": null,
+      "url": "https://ecrm.police.go.kr",
+      "description": "사이버범죄 피해 신고, 상담, 제보를 온라인으로 접수할 수 있는 경찰청 시스템입니다."
+    },
+    "주택도시보증공사 HUG": {
+      "name": "주택도시보증공사 HUG",
+      "phone": "지역별 상이",
+      "url": "https://www.khug.or.kr",
+      "description": "전세사기 피해자 대상 법률 상담, 피해 접수, 금융 지원 등을 안내하는 기관입니다."
+    },
+    "정부민원안내콜센터 110": {
+      "name": "정부민원안내콜센터 110",
+      "phone": "110",
+      "url": "https://www.110.go.kr",
+      "description": "정부 민원과 공공기관 상담 경로를 안내받을 수 있는 정부민원안내 서비스입니다."
+    }
+  }
+}

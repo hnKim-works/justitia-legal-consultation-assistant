@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>무료법률 상담신청서</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="document-body">
+
+<div class="print-actions">
+    <button type="button" onclick="window.print()">PDF 저장/인쇄</button>
+    <a href="/" class="back-button">처음으로 돌아가기</a>
+</div>
+
+<main class="summary-document application-form">
+    <header class="form-title">
+        <p>&lt;상담기관 제출용 참고자료&gt;</p>
+        <h1>무료법률 상담신청서</h1>
+    </header>
+
+    <table class="form-table">
+        <tbody>
+            <tr>
+                <th>작성일시</th>
+                <td>{{ written_at }}</td>
+                <th>상담지역</th>
+                <td>{{ incident_region or "미입력" }}</td>
+            </tr>
+            <tr>
+                <th>상담 구분</th>
+                <td colspan="3">
+                    {% if result.selected_case_types %}
+                        {% for item in result.selected_case_types %}
+                            <span class="inline-chip">{{ item.label }}</span>
+                        {% endfor %}
+                    {% else %}
+                        자동 분류 어려움
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>추천 기관</th>
+                <td colspan="3">
+                    {% if result.recommended_agencies %}
+                        {% for agency in result.recommended_agencies %}
+                            <span class="inline-chip muted-chip">{{ agency.name }}</span>
+                        {% endfor %}
+                    {% else %}
+                        가까운 공공 상담기관 확인 필요
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <section class="form-box">
+        <div class="form-box-label">상담 내용</div>
+        <div class="form-box-body">
+            <h2>1. 최초 상담 요청 내용</h2>
+            <p>{{ user_text }}</p>
+
+            <h2>2. 추가 확인 질문 및 답변</h2>
+            {% if follow_up_questions %}
+            <div class="qa-list">
+                {% for question in follow_up_questions %}
+                <div class="qa-item">
+                    <p class="qa-question">Q{{ loop.index }}. {{ question }}</p>
+                </div>
+                {% endfor %}
+                <div class="qa-answer">
+                    <strong>답변</strong>
+                    <p>{{ follow_up_answers }}</p>
+                </div>
+            </div>
+            {% else %}
+            <p>{{ follow_up_answers }}</p>
+            {% endif %}
+
+            <h2>3. 사건 발생 일시 및 장소</h2>
+            <p>일시: {{ incident_time or "미입력" }}</p>
+            <p>장소: {{ incident_region or "미입력" }}</p>
+
+            <h2>4. 상담기관에 전달할 핵심 요약</h2>
+            <p>{{ case_summary }}</p>
+        </div>
+    </section>
+
+    {% if guidance_response %}
+    <section class="form-section">
+        <h2>상담 준비 안내</h2>
+        <p>{{ guidance_response }}</p>
+    </section>
+    {% endif %}
+
+    {% if user_extra_question %}
+    <section class="form-section">
+        <h2>마지막 추가 질문</h2>
+        <p class="qa-question">Q. {{ user_extra_question }}</p>
+        <p><strong>답변</strong></p>
+        <p>{{ final_answer }}</p>
+    </section>
+    {% endif %}
+
+    <footer class="form-footer">
+        <p>본 문서는 상담 준비를 위한 참고자료이며, 법률 판단이나 변호사의 법률 자문을 대체하지 않습니다.</p>
+        <p>개인 식별 정보는 이 문서에 포함하지 않았습니다. 상담기관 제출 시 필요한 정보는 별도로 확인해 주세요.</p>
+        <p>현재 위험한 상황이라면 112 또는 1366 등 긴급 지원기관에 먼저 연락하는 것이 좋습니다.</p>
+    </footer>
+</main>
+
+</body>
+</html>

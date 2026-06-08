@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>분석 결과</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="page">
+
+    <header class="header">
+        <div class="logo-box">
+            <div class="logo-icon">⚖️</div>
+            <div>
+                <h1>상담 방향 분석 결과</h1>
+                <p>입력하신 상황을 바탕으로 상담 분야와 지원기관을 안내합니다.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-card">
+
+        <section class="result-section">
+
+            <div class="user-input-box">
+                <h3>입력하신 내용</h3>
+                <p>{{ user_text }}</p>
+            </div>
+
+            <div class="result-header">
+                <span class="result-badge">분석 결과</span>
+                <h2>상담 방향 안내</h2>
+                <p>{{ result.user_message }}</p>
+            </div>
+
+            {% if result.selected_case_types %}
+            <div class="result-block">
+                <h3>예상 상담 분야</h3>
+
+                <div class="card-list">
+                    {% for item in result.selected_case_types %}
+                    <div class="info-card">
+                        <strong>{{ item.label }}</strong>
+                        <p>{{ item.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if result.recommended_agencies %}
+            <div class="result-block">
+                <h3>추천 공공지원 기관</h3>
+
+                <div class="agency-grid">
+                    {% for agency in result.recommended_agencies %}
+                    <div class="agency-card">
+                        <strong>{{ agency.name }}</strong>
+                        <p>{{ agency.description }}</p>
+                        <div class="agency-actions">
+                            {% if agency.url %}
+                            <a href="{{ agency.url }}" target="_blank" rel="noopener noreferrer">바로가기</a>
+                            {% endif %}
+                            {% if agency.phone %}
+                            <span>전화 {{ agency.phone }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="result-block">
+                <h3>지역 기반 마을변호사 안내</h3>
+
+                {% if lawyer_lookup_error %}
+                <div class="region-request-box">
+                    <strong>지역은 확인했지만 조회가 일시적으로 실패했습니다.</strong>
+                    <p>
+                        {{ lawyer_lookup_error }}
+                    </p>
+
+                    <form method="POST" action="/result" class="region-form">
+                        <input type="hidden" name="user_text" value="{{ user_text }}">
+                        <label for="region-text">지역</label>
+                        <input
+                            id="region-text"
+                            type="text"
+                            name="region_text"
+                            value="{{ region_text }}"
+                            placeholder="예: 인천 계양구 / 강원 홍천군"
+                        >
+                        <button type="submit">다시 조회하기</button>
+                    </form>
+                </div>
+                {% elif region_required %}
+                <div class="region-request-box">
+                    <strong>지역 정보를 조금 더 확인해 주세요.</strong>
+                    <p>
+                        지역 기반 공공지원 기관 연결을 위해 거주 지역 또는 사건 발생 지역을 입력해주세요.
+                    </p>
+
+                    <form method="POST" action="/result" class="region-form">
+                        <input type="hidden" name="user_text" value="{{ user_text }}">
+                        <label for="region-text">지역</label>
+                        <input
+                            id="region-text"
+                            type="text"
+                            name="region_text"
+                            value="{{ region_text }}"
+                            placeholder="예: 인천 계양구 / 강원 홍천군"
+                        >
+                        <button type="submit">지역에 맞는 변호사 찾기</button>
+                    </form>
+                </div>
+                {% elif region_no_match %}
+                <div class="region-request-box">
+                    <strong>입력한 지역으로 바로 연결되는 마을변호사를 찾지 못했습니다.</strong>
+                    <p>
+                        입력하신 지역명은 확인했지만, 공공데이터에서 바로 일치하는 마을변호사 정보를 찾지 못했습니다.
+                        구·군 또는 읍·면·동 이름을 조금 더 구체적으로 입력해 다시 조회해 주세요.
+                    </p>
+
+                    <form method="POST" action="/result" class="region-form">
+                        <input type="hidden" name="user_text" value="{{ user_text }}">
+                        <label for="region-text">지역</label>
+                        <input
+                            id="region-text"
+                            type="text"
+                            name="region_text"
+                            value="{{ region_text }}"
+                            placeholder="예: 인천 계양구 계산동 / 강원 홍천군 홍천읍"
+                        >
+                        <button type="submit">지역을 구체화해서 다시 찾기</button>
+                    </form>
+                </div>
+                {% elif lawyer_recommendations %}
+                <div class="lawyer-list">
+                    {% for lawyer in lawyer_recommendations %}
+                    <div class="lawyer-card">
+                        <div class="lawyer-main">
+                            <span class="result-badge secondary-badge">마을변호사 정보</span>
+                            <dl>
+                                <div>
+                                    <dt>지역</dt>
+                                    <dd>{{ lawyer.region_label }}</dd>
+                                </div>
+                                <div>
+                                    <dt>담당 변호사</dt>
+                                    <dd>{{ lawyer.attorney }} 변호사</dd>
+                                </div>
+                                <div>
+                                    <dt>비고</dt>
+                                    <dd>{{ lawyer.attorney_note or "-" }}</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <details class="admin-detail">
+                            <summary>행정 담당 정보 보기</summary>
+                            <dl>
+                                <div>
+                                    <dt>시군구 담당 주무관</dt>
+                                    <dd>{{ lawyer.city_public_servant or "-" }}</dd>
+                                </div>
+                                <div>
+                                    <dt>읍면동 담당 주무관</dt>
+                                    <dd>{{ lawyer.village_public_servant or "-" }}</dd>
+                                </div>
+                            </dl>
+                        </details>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="consult-guide">
+                    <h4>상담 신청 방법</h4>
+                    <ol>
+                        <li>거주지 또는 사건 발생지 관할 행정복지센터에 문의</li>
+                        <li>“마을변호사 상담을 받고 싶다”고 말하기</li>
+                        <li>상담 내용과 연락 가능한 번호를 전달</li>
+                        <li>담당 마을변호사와 전화·이메일·방문 상담 방식 확인</li>
+                    </ol>
+                    <p class="consult-note">
+                        ※ 현재 화면의 마을변호사 정보는 공공데이터 API 기준이며, 실제 상담 신청은 관할 행정복지센터를 통해 확인하는 것이 안전합니다.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if result.follow_up_questions %}
+            <div class="result-block follow-up-area">
+                <span class="result-badge secondary-badge">추가 질문</span>
+                <h3>상황을 조금 더 확인해 주세요</h3>
+
+                <ul class="question-list">
+                    {% for question in result.follow_up_questions %}
+                    <li>{{ question }}</li>
+                    {% endfor %}
+                </ul>
+
+                <form class="answer-form" method="POST" action="/guidance">
+                    <input type="hidden" name="user_text" value="{{ user_text }}">
+
+                    {% if answer_error %}
+                    <p class="error-message">{{ answer_error }}</p>
+                    {% endif %}
+
+                    <label for="follow-up-answers">추가 답변</label>
+                    <textarea
+                        id="follow-up-answers"
+                        name="follow_up_answers"
+                        placeholder="위 질문에 대한 답변을 자유롭게 입력해주세요."
+                    >{{ follow_up_answers }}</textarea>
+
+                    <div class="field-group">
+                        <label for="incident-time">사건 발생 시간</label>
+                        <input
+                            id="incident-time"
+                            type="text"
+                            name="incident_time"
+                            value="{{ incident_time }}"
+                            placeholder="예: 2026년 5월 17일 밤 10시경"
+                        >
+                    </div>
+
+                    <div class="field-group">
+                        <label for="incident-region">사건 발생 지역</label>
+                        <input
+                            id="incident-region"
+                            type="text"
+                            name="incident_region"
+                            value="{{ incident_region or region_text }}"
+                            placeholder="예: 인천 계양구 작전1동"
+                        >
+                    </div>
+
+                    <button type="submit">안내 확인하고 문서 준비하기</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="notice-box">
+                본 시스템은 법률 판단이나 자문을 제공하지 않으며,
+                상담 방향과 공공지원 경로를 안내하기 위한 참고용 서비스입니다.
+                현재 위험한 상황이라면 112 또는 1366 등 긴급 지원기관에 먼저 연락하는 것이 좋습니다.
+            </div>
+
+            <div class="button-row">
+                <a href="/" class="back-button">다시 입력하기</a>
+            </div>
+
+            <details class="debug-box">
+                <summary>분류 근거 보기</summary>
+
+                <h4>감지된 키워드</h4>
+                <ul>
+                    {% for match in result.matched_keywords %}
+                    <li>{{ match.keyword }} → {{ match.group_label }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4>내부 점수</h4>
+                <ul>
+                    {% for case_type, score in result.scores.items() %}
+                    <li>{{ case_type }}: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

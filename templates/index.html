@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>너변호 법률 상담 방향 안내 시스템</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="page">
+
+    <header class="header">
+        <div class="logo-box">
+            <div class="logo-icon">⚖️</div>
+            <div>
+                <h1>너변호 법률 상담 방향 안내 시스템</h1>
+                <p>거주 지역과 현재 상황을 바탕으로 상담 분야와 공공지원 기관을 안내합니다.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-card">
+        <section class="input-section">
+            <h2>거주 지역과 현재 상황을 함께 입력해주세요.</h2>
+            <p class="example">
+                예: 인천 계양구 사는 대학생인데 집주인이 보증금을 돌려주지 않아요.<br>
+                예: 서울 강서구에서 전남자친구에게 협박을 받고 있어요.<br>
+                예: 강원 홍천군에서 학교폭력을 당하고 있어요.
+            </p>
+
+            <p class="privacy-warning">
+                이름, 주민등록번호, 상세 주소, 전화번호 등 개인 식별 정보는 입력하지 마세요.
+            </p>
+
+            {% if error %}
+            <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="/result">
+                <textarea
+                    name="user_text"
+                    placeholder="거주 지역 또는 사건 발생 지역과 현재 상황을 함께 입력해주세요."
+                ></textarea>
+
+                <button type="submit">상담 방향 확인하기</button>
+            </form>
+        </section>
+    </main>
+
+</div>
+
+</body>
+</html>
