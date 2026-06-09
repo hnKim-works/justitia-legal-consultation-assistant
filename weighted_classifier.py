@@ -86,6 +86,16 @@ def analyze_text(text):
             if agency not in agency_names:
                 agency_names.append(agency)
 
+    school_context_pending = (
+        has_school_age_context(text)
+        and not any(item["case_type"] == "school_violence" for item in selected_case_types)
+    )
+
+    if school_context_pending:
+        for agency in rules["support_agencies"].get("school_violence", []):
+            if agency not in agency_names:
+                agency_names.append(agency)
+
     agencies = []
     agency_info = rules.get("agency_info", {})
 
@@ -127,6 +137,7 @@ def get_follow_up_questions(text, selected_case_types, detected_groups):
     candidates = []
     selected_type_ids = [item["case_type"] for item in selected_case_types]
     region_exists = has_region(text)
+    school_age_context_exists = has_school_age_context(text)
 
     if "threat_danger" in detected_groups and "emergency_risk" not in selected_type_ids:
         selected_type_ids.insert(0, "emergency_risk")
@@ -134,6 +145,8 @@ def get_follow_up_questions(text, selected_case_types, detected_groups):
     for type_index, case_type in enumerate(selected_type_ids):
         for question_item in question_bank.get(case_type, []):
             if question_item.get("condition") == "region" and region_exists:
+                continue
+            if question_item.get("condition") == "school_age_context" and not school_age_context_exists:
                 continue
 
             candidates.append({
@@ -145,6 +158,8 @@ def get_follow_up_questions(text, selected_case_types, detected_groups):
     if not candidates:
         for question_item in question_bank.get("victim_support", []):
             if question_item.get("condition") == "region" and region_exists:
+                continue
+            if question_item.get("condition") == "school_age_context" and not school_age_context_exists:
                 continue
 
             candidates.append({
@@ -171,6 +186,16 @@ def get_follow_up_questions(text, selected_case_types, detected_groups):
             break
 
     return questions
+
+
+def has_school_age_context(text):
+    school_context_keywords = [
+        "학교", "초등학교", "중학교", "고등학교", "초등학생", "중학생", "고등학생",
+        "같은 반", "반 친구", "반 애들", "담임", "교실", "급식실", "학년",
+        "학교폭력", "학폭", "선배", "후배"
+    ]
+
+    return any(keyword in text for keyword in school_context_keywords)
 
 
 def has_region(text):
