@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
 import re
 from gemini_helper import (
     answer_final_user_question,
@@ -37,6 +37,11 @@ def get_lawyer_recommendations(user_text, region_text=""):
     except Exception as error:
         print(f"마을변호사 API 조회 실패: {error}")
         return [], "마을변호사 공공데이터 조회가 일시적으로 실패했습니다. 잠시 후 다시 시도하거나 관할 행정복지센터에 문의해 주세요."
+
+
+@app.route("/robots.txt", methods=["GET"])
+def robots():
+    return Response("User-agent: *\nDisallow: /\n", mimetype="text/plain")
 
 
 @app.route("/", methods=["GET"])
