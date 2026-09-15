@@ -1,10 +1,15 @@
 import json
+import os
 import re
 from collections import defaultdict
 
+from gemini_helper import classify_case_types
+
+RULES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "rules.json")
+
 
 def load_rules():
-    with open("data/rules.json", "r", encoding="utf-8") as f:
+    with open(RULES_PATH, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -55,17 +60,47 @@ def analyze_text(text):
             forced_case_types.add(must_include)
 
     # 3. 출력할 사건 유형 결정
+    # Gemini가 문맥을 읽고 rules.json에 정의된 유형 중에서 고른 결과를 우선 사용하고,
+    # 비활성화/실패 시(None 반환) 기존 키워드 점수 기반 임계값 방식으로 폴백한다.
     display_threshold = rules["thresholds"]["display"]
+    gemini_case_types = classify_case_types(text, rules, scores, detected_groups)
 
     selected_case_types = []
 
     for case_type, score in scores.items():
-        if score >= display_threshold or case_type in forced_case_types:
+        if case_type not in rules["case_types"]:
+            continue
+
+        forced = case_type in forced_case_types
+
+        if gemini_case_types is not None:
+            keep = forced or case_type in gemini_case_types
+        else:
+            keep = forced or score >= display_threshold
+
+        if keep:
             selected_case_types.append({
                 "case_type": case_type,
                 "label": rules["case_types"][case_type]["label"],
                 "description": rules["case_types"][case_type]["description"],
                 "score": score,
+                "forced": forced
+            })
+
+    # 키워드 점수가 전혀 없었지만(=scores에 키 자체가 없음) Gemini가 문맥상 골라낸 유형도 반영한다.
+    # 키워드 매칭만으로는 놓칠 수 있는, 이 하이브리드 구조의 핵심 목적이다.
+    if gemini_case_types is not None:
+        already_added = {item["case_type"] for item in selected_case_types}
+
+        for case_type in gemini_case_types:
+            if case_type in already_added or case_type not in rules["case_types"]:
+                continue
+
+            selected_case_types.append({
+                "case_type": case_type,
+                "label": rules["case_types"][case_type]["label"],
+                "description": rules["case_types"][case_type]["description"],
+                "score": scores.get(case_type, 0),
                 "forced": case_type in forced_case_types
             })
 
@@ -120,7 +155,8 @@ def analyze_text(text):
         "recommended_agency_names": agency_names,
         "recommended_agencies": agencies,
         "follow_up_questions": follow_up_questions,
-        "user_message": make_user_message(selected_case_types)
+        "user_message": make_user_message(selected_case_types),
+        "classification_method": "gemini" if gemini_case_types is not None else "keyword"
     }
 
 

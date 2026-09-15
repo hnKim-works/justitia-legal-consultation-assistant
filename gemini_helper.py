@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+RULES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "rules.json")
 
 
 def get_gemini_client():
@@ -45,9 +46,98 @@ def call_gemini(prompt):
     return getattr(response, "text", None)
 
 
+def classify_case_types(user_input, rules, scores, detected_groups):
+    """
+    Gemini가 rules.json에 정의된 case_type 중에서만 문맥에 맞는 유형을 고르도록 한다.
+    비활성화 상태이거나 호출/파싱에 실패하면 None을 반환하며,
+    호출 측은 기존 키워드 점수 기반 분류로 폴백해야 한다.
+    """
+    if os.getenv("GEMINI_CLASSIFY", "false").lower() != "true":
+        return None
+
+    client = get_gemini_client()
+
+    if client is None:
+        return None
+
+    valid_case_types = list(rules.get("case_types", {}).keys())
+
+    if not valid_case_types:
+        return None
+
+    case_type_descriptions = "\n".join(
+        f"- {case_type}: {info.get('label', '')} ({info.get('description', '')})"
+        for case_type, info in rules.get("case_types", {}).items()
+    )
+
+    prompt = f"""
+다음은 법률상담 준비 서비스에 입력된 사용자 상황입니다.
+아래 사건 유형 목록 중, 이 상황과 실제로 관련될 수 있는 유형을 모두 선택해 주세요.
+
+사용자 입력:
+{user_input}
+
+키워드 기반 참고 점수 (참고용, 절대적인 기준 아님):
+{dict(scores)}
+
+탐지된 키워드 그룹 (참고용):
+{list(detected_groups)}
+
+사건 유형 목록:
+{case_type_descriptions}
+
+규칙:
+- 반드시 위 목록에 있는 유형 이름(영문 키)만 사용합니다.
+- 목록에 없는 새로운 유형을 만들지 않습니다.
+- 명확히 관련 없는 유형은 포함하지 않습니다.
+- 관련된 유형이 없다고 판단되면 빈 배열을 반환합니다.
+"""
+
+    try:
+        from google.genai import types
+
+        response = client.models.generate_content(
+            model=os.getenv("GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema={
+                    "type": "OBJECT",
+                    "properties": {
+                        "case_types": {
+                            "type": "ARRAY",
+                            "items": {"type": "STRING", "enum": valid_case_types}
+                        }
+                    },
+                    "required": ["case_types"]
+                }
+            )
+        )
+    except Exception as error:
+        print(f"Gemini 분류 호출 실패: {error}")
+        return None
+
+    result_text = getattr(response, "text", None)
+
+    if not result_text:
+        return None
+
+    try:
+        parsed = json.loads(result_text)
+        case_types = parsed.get("case_types", [])
+    except (json.JSONDecodeError, AttributeError, TypeError):
+        return None
+
+    if not isinstance(case_types, list):
+        return None
+
+    print("Gemini 분류 성공")
+    return [case_type for case_type in case_types if case_type in valid_case_types]
+
+
 def load_guidance_templates():
     try:
-        with open("data/rules.json", "r", encoding="utf-8") as file:
+        with open(RULES_PATH, "r", encoding="utf-8") as file:
             rules = json.load(file)
     except (OSError, json.JSONDecodeError):
         return {}
