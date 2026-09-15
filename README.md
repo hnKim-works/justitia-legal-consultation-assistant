@@ -13,31 +13,31 @@
 
    > 예시 입력: "인천 계양구 사는 대학생인데 집주인이 보증금을 돌려주지 않아요."
 
-   ![상황 입력 화면](docs/screenshots/01-input.png)
+   <img src="docs/screenshots/01-input.png" alt="상황 입력 화면" width="480">
 
 2. **분석 결과 확인** (`/result`)
    - 입력 내용을 바탕으로 예상 상담 분야(성폭력, 폭행/상해, 학교폭력, 디지털 성범죄, 임대차·전세사기 등)를 안내합니다. 예시 입력은 "임대차·전세사기 상담"으로 분류되어, 주택도시보증공사 HUG·대한법률구조공단·정부민원안내콜센터 110이 추천됩니다.
 
-     ![분석 결과 화면](docs/screenshots/02-result-classification.png)
+     <img src="docs/screenshots/02-result-classification.png" alt="분석 결과 화면" width="480">
 
    - 입력한 지역을 기준으로 공공데이터포털의 **마을변호사** 정보를 조회해 연결 방법을 안내합니다. "인천 계양구"처럼 구·군 단위까지 구체적으로 적으면, 해당 지역에 마을변호사가 배정돼 있을 경우 동(洞)별로 담당 변호사 명단과 상담 신청 방법이 바로 뜹니다. 일치하는 정보가 없으면 지역을 더 구체화해 달라는 안내가 나옵니다.
 
-     ![마을변호사 매칭 화면](docs/screenshots/03-result-lawyer-match.png)
+     <img src="docs/screenshots/03-result-lawyer-match.png" alt="마을변호사 매칭 화면" width="480">
 
    - 상황을 더 구체화하기 위한 추가 질문 1~2개와, 답변·사건 발생 시간·지역을 입력하는 폼이 함께 제시됩니다.
 
-     ![추가 질문 답변 폼](docs/screenshots/04-result-followup-form.png)
+     <img src="docs/screenshots/04-result-followup-form.png" alt="추가 질문 답변 폼" width="480">
 
 3. **추가 답변 → 상담 준비 안내** (`/guidance`)
    추가 질문에 대한 답변과 사건 발생 시간·지역을 입력하면, 지금 당장 할 수 있는 준비(증거 보존, 의료지원 연계, 긴급 연락처 등)를 Gemini가 짧게 안내합니다. 예시에서는 "임대차계약서, 보증금 이체내역, 등기부등본, 임대인과의 문자 내용을 미리 준비해두라"는 안내를 받았습니다. 마지막으로 궁금한 점을 한 번 더 질문할 수 있는데, 이 단계는 건너뛰고 바로 문서 생성으로 넘어가도 됩니다.
 
-   ![상담 준비 안내 화면](docs/screenshots/05-guidance.png)
+   <img src="docs/screenshots/05-guidance.png" alt="상담 준비 안내 화면" width="480">
 
 4. **사건 정리 문서 생성** (`/case-summary`)
    지금까지의 입력을 바탕으로 상담기관에 들고 갈 수 있는 "무료법률 상담신청서" 형식의 정리 문서를 생성합니다. 작성일시, 상담 구분, 추천 기관, 상담 내용(최초 요청 내용 · 추가 질문/답변 · 사건 발생 일시/장소 · 핵심 요약), 상담 준비 안내, (질문을 입력했다면) 마지막 질문과 답변까지 한 문서에 정리됩니다.
 
-   ![사건 정리 문서 상단](docs/screenshots/06-case-summary-top.png)
-   ![사건 정리 문서 하단](docs/screenshots/07-case-summary-bottom.png)
+   <img src="docs/screenshots/06-case-summary-top.png" alt="사건 정리 문서 상단" width="480">
+   <img src="docs/screenshots/07-case-summary-bottom.png" alt="사건 정리 문서 하단" width="480">
 
 5. **PDF로 저장** — 문서 화면 상단의 **"PDF 저장/인쇄"** 버튼(위 스크린샷에도 보입니다)을 누르면 브라우저의 인쇄 대화상자가 열립니다. 프린터 대신 **"PDF로 저장"**(또는 "Microsoft Print to PDF", "다른 이름으로 PDF 저장" 등 OS/브라우저별 표기)을 선택하면 이 문서가 PDF 파일로 저장됩니다. 서버에서 별도의 PDF 생성 과정을 거치지 않는, 브라우저 내장 인쇄 기능을 사용하는 방식입니다.
 
